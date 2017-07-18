@@ -2,6 +2,8 @@ import React, {Component} from 'react'
 import * as BooksAPI from './BooksAPI'
 import './App.css'
 import BooksShelf from './BooksShelf'
+import {Route} from 'react-router-dom'
+import SearchBooks from './SearchBooks'
 
 class App extends Component {
   state = {
@@ -11,8 +13,9 @@ class App extends Component {
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: true,
+    //showSearchPage: true,
     booksInShelf: [],
+    booksOnSearch:[]
   }
 
   componentDidMount(){
@@ -21,21 +24,35 @@ class App extends Component {
         booksInShelf: books
       })
     })
+
+  }
+
+  searchBooks=(query)=>{
+    BooksAPI.search(query,20 ).then((res)=>{
+      this.setState({ 
+        booksOnSearch:res
+      })
+    })
   }
 
   updateBooksShelf=(bookId, bookShelf)=>{
-    console.log("in update book shelf", bookId, bookShelf);
-    console.log("booksInShelf", this.state.booksInShelf);
+    
+    BooksAPI.update(bookId, bookShelf).then(()=>{
 
-    BooksAPI.update(bookId, bookShelf).then((x)=>{
+      var newObj = this.state.booksInShelf.filter(function(obj) {
+        if(obj.id===bookId){
+          obj.shelf=bookShelf;
+        }
+        return obj
+        
+      });
 
+      this.setState({
+        booksInShelf: newObj
+      })
 
-      console.log('x', x)
-   
-      //this.setState({booksInShelf:updatedTicket});
       
     })
-
 
 
   }
@@ -43,19 +60,14 @@ class App extends Component {
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
-              <div className="search-books-input-wrapper">
-                <input type="text" placeholder="Search by title or author"/>
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid"></ol>
-            </div>
-          </div>
-        ) : (<BooksShelf booksInShelf={this.state.booksInShelf} updateBookShelf={this.updateBooksShelf} />)}
+        <Route exact path="/search" render={()=>
+          (<SearchBooks booksInShelf={this.state.booksInShelf} searchBooks={this.searchBooks} 
+            updateBookShelf={this.updateBooksShelf} booksOnSearch={this.state.booksOnSearch}/>)
+        }/>  
+          
+        <Route exact path="/" render={()=>
+          (<BooksShelf booksInShelf={this.state.booksInShelf} updateBookShelf={this.updateBooksShelf} />
+        )}/>
       </div>
     )
   }
