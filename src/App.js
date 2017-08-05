@@ -15,13 +15,19 @@ class App extends Component {
      */
     //showSearchPage: true,
     booksInShelf: [],
-    booksOnSearch:[]
+    booksOnSearch:[],
+    booksOnShelfIdList:[]
   }
+
 
   componentDidMount(){
     BooksAPI.getAll().then((books)=>{
+      var listOfIds = [];
+      listOfIds=books.map(b=>b.id);
+
         this.setState({
-        booksInShelf: books
+        booksInShelf: books,
+        booksOnShelfIdList: listOfIds
       })
     })
 
@@ -41,14 +47,16 @@ class App extends Component {
     
     BooksAPI.update(bookId, bookShelf).then(()=>{
 
-      if(bookShelf === 'none')
+      if(bookShelf === 'none') //remove from shelf
       {
         this.setState((currState)=>({ 
-          booksInShelf: currState.booksInShelf.filter((c)=>c.id!==bookId)
+          booksInShelf: currState.booksInShelf.filter((c)=>c.id!==bookId),
+          booksOnShelfIdList: currState.booksOnShelfIdList.filter((c)=>c.id!==bookId)
+          //add to searh res?
         }))
 
       }
-      else{
+      else{ //just update the shelf
       var newObj = this.state.booksInShelf.filter(function(obj) {
         if(obj.id===bookId){
           obj.shelf=bookShelf;
@@ -68,32 +76,33 @@ class App extends Component {
 
   }
 
-  addBookToShelf=(bookId, bookShelf)=>{
+  addBookToShelf=(bookId, bookShelf)=>{ //add book to shelf if its moving from none to any other state
     console.log('in addbook to shelf id', bookId, bookShelf);
 
-    if(bookShelf!=='none'){
+    //if(bookShelf!=='none'){  //if the book is moving to none state from none it need not be added to the shelf
     
       BooksAPI.update(bookId, bookShelf).then(()=>{
 
         //console.log('obr', obr);
 
-        var newObj = this.state.booksOnSearch.filter((obj)=>obj.id===bookId)
+        var newObj = this.state.booksOnSearch.filter((obj)=>obj.id===bookId) //get obj details
         console.log('newObj:', newObj[0]);
-        console.log('newObj shelf', newObj[0].shelf);
-        if(newObj[0].shelf === 'none')
-        {
-          newObj[0].shelf = bookShelf;  
+        console.log('newObj shelf', newObj[0].shelf); //TODO add checks
+        //if(newObj[0].shelf === 'none')  //if previous state is none add book to shelf
+        //{
+          newObj[0].shelf = bookShelf; //change to new state 
           console.log('in addbook to shelf', newObj[0]);
           this.setState((currState)=>({ 
-            booksInShelf: currState.booksInShelf.concat(newObj[0])
+            booksInShelf: currState.booksInShelf.concat(newObj[0]),
+            booksOnShelfIdList: currState.booksOnShelfIdList.concat(newObj[0].id)
           }))
 
-        }
+        //}
         
         console.log('updated book in shelf:', this.state.booksInShelf);
       
       })
-    }
+    //}
   
 
 
@@ -104,7 +113,8 @@ class App extends Component {
       <div className="app">
         <Route exact path="/search" render={()=>
           (<SearchBooks booksInShelf={this.state.booksInShelf} searchBooks={this.searchBooks} 
-            updateBookShelf={this.updateBooksShelf} addBookToShelf={this.addBookToShelf} booksOnSearch={this.state.booksOnSearch}/>)
+            updateBookShelf={this.updateBooksShelf} addBookToShelf={this.addBookToShelf} 
+            booksOnSearch={this.state.booksOnSearch} booksOnShelfIdList={this.state.booksOnShelfIdList}/>)
         }/>  
           
         <Route exact path="/" render={()=>

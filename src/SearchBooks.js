@@ -25,8 +25,9 @@ class SearchBooks extends Component{
   render(){
 
     const {query} = this.state;
-    const {booksInShelf, updateBookShelf, booksOnSearch, addBookToShelf}= this.props;
+    const {booksInShelf, updateBookShelf, booksOnSearch, addBookToShelf, booksOnShelfIdList}= this.props;
     let showShelfBooks=[];
+    console.log('books on shelf id list ', booksOnShelfIdList);
 
     if(query)
     {
@@ -56,7 +57,7 @@ class SearchBooks extends Component{
                   <RenderBook key={itr} books={books} updateBookShelf={updateBookShelf}/>
                 ))}
 
-                {query && booksOnSearch.filter(books=> books.shelf==='none').map((books, itr)=>(
+                {query && booksOnSearch.filter(books=> books.shelf==='none' && booksOnShelfIdList.indexOf(books.id)===-1).map((books, itr)=>(
                   <RenderBook key={itr} books={books} updateBookShelf={addBookToShelf}/>
                 ))}
 
@@ -70,7 +71,8 @@ class SearchBooks extends Component{
 
 SearchBooks.defaultProps = {
   booksOnSearch: [],
-  booksInShelf: []
+  booksInShelf: [],
+  booksOnShelfIdList:[]
 };
 
 SearchBooks.PropTypes={
@@ -78,7 +80,8 @@ SearchBooks.PropTypes={
   booksInShelf: PropTypes.array.isRequired,
   updateBookShelf: PropTypes.func.isRequired,
   booksOnSearch: PropTypes.array.isRequired,
-  addBookToShelf: PropTypes.func.isRequired
+  addBookToShelf: PropTypes.func.isRequired,
+  booksOnShelfIdList: PropTypes.array.isRequired
 }
 
 export default SearchBooks;
