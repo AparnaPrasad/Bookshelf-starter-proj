@@ -11,7 +11,6 @@ class BooksShelf extends Component {
 	render() {
 
 		const {booksInShelf, updateBookShelf} = this.props;
-    //console.log("func:", updateBookShelf());
 
 		return (
           <div className="list-books">

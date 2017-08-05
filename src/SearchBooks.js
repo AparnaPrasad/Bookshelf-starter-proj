@@ -27,7 +27,6 @@ class SearchBooks extends Component{
     const {query} = this.state;
     const {booksInShelf, updateBookShelf, booksOnSearch, addBookToShelf, booksOnShelfIdList}= this.props;
     let showShelfBooks=[];
-    console.log('books on shelf id list ', booksOnShelfIdList);
 
     if(query)
     {

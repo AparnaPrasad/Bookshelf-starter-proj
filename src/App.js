@@ -7,13 +7,6 @@ import SearchBooks from './SearchBooks'
 
 class App extends Component {
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    //showSearchPage: true,
     booksInShelf: [],
     booksOnSearch:[],
     booksOnShelfIdList:[]
@@ -52,7 +45,6 @@ class App extends Component {
         this.setState((currState)=>({ 
           booksInShelf: currState.booksInShelf.filter((c)=>c.id!==bookId),
           booksOnShelfIdList: currState.booksOnShelfIdList.filter((c)=>c.id!==bookId)
-          //add to searh res?
         }))
 
       }
@@ -77,34 +69,18 @@ class App extends Component {
   }
 
   addBookToShelf=(bookId, bookShelf)=>{ //add book to shelf if its moving from none to any other state
-    console.log('in addbook to shelf id', bookId, bookShelf);
-
-    //if(bookShelf!=='none'){  //if the book is moving to none state from none it need not be added to the shelf
     
       BooksAPI.update(bookId, bookShelf).then(()=>{
 
-        //console.log('obr', obr);
-
         var newObj = this.state.booksOnSearch.filter((obj)=>obj.id===bookId) //get obj details
-        console.log('newObj:', newObj[0]);
-        console.log('newObj shelf', newObj[0].shelf); //TODO add checks
-        //if(newObj[0].shelf === 'none')  //if previous state is none add book to shelf
-        //{
+
           newObj[0].shelf = bookShelf; //change to new state 
-          console.log('in addbook to shelf', newObj[0]);
           this.setState((currState)=>({ 
             booksInShelf: currState.booksInShelf.concat(newObj[0]),
             booksOnShelfIdList: currState.booksOnShelfIdList.concat(newObj[0].id)
           }))
 
-        //}
-        
-        console.log('updated book in shelf:', this.state.booksInShelf);
-      
       })
-    //}
-  
-
 
   }
 
