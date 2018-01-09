@@ -1,5 +1,6 @@
-This is one of the projects for the final assessment project for Udacity's React Fundamentals course.
-
+#Book Shelf
+Project 1: Udacity Nano Degree
+This is one of the projects for the final assessment project for Udacity's React Fundamentals course. This projects demonstrates the understanding of props, states, Components, JSX and JavaScript(ECMAScript) 6.
 
 My Reads is a book tracking app. In this project, I have created a bookshelf that allows you to select and categorize books you have read, are currently reading, or want to read. The project emphasizes using React to build the application and provides an API server and client library that you will use to persist information as you interact with the application.
 
