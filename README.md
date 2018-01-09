@@ -1,4 +1,4 @@
-#Book Shelf
+# Book Shelf
 Project 1: Udacity Nano Degree
 This is one of the projects for the final assessment project for Udacity's React Fundamentals course. This projects demonstrates the understanding of props, states, Components, JSX and JavaScript(ECMAScript) 6.
 
